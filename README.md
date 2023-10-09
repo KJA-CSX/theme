@@ -34,6 +34,7 @@
 
 - Similar to standard react native styling, but with additional props that can be added to make it themeable.
 - Can be implemented for Views + Texts + Images + Icons...
+- Auto-completion & Dynamic
 - Light & Fast.
 - Expo & React Native.
 - Supports React Navigation.
@@ -66,6 +67,10 @@ yarn add theme-csx
 
 - Is an extra helper function that can be used to theme a specific value. (it becomes useful with react navigation)
 
+> **themeProvider() - New 🌟**
+
+- Use this function to set up and maintain a constant global theme around the app.
+
 > **appearanceHook**
 
 - Use the appearanceHook to switch theme from anywhere in your app.
@@ -74,9 +79,61 @@ yarn add theme-csx
 
 ## Usage ❓
 
+1) Create a `theme.config.ts` file anywhere in the app project, then add your custom theme accordingly, finally use the `themeProvider` function to export app `theme` .
+   
+```js
+import {themeProvider} from 'theme-csx';
+
+// Note(1): The object must include: colors, spacing, font, lineHeight, letterSpacing, shadow.
+// Note(2): If you do NOT want to use any of the above-mentioned categories, leave it empty.
+// Note(3): You have the option of adding a new category that is not listed above.
+// Note(4): You can update and add inside each category as you see suitable. 
+
+// App theme object 
+const Theme = {
+  colors: {
+    primary: '{App primary color}',
+    secondary: '{App secondary color}',
+    green: 'green',
+    light: {
+      background: '#fff',
+      text: '#000000',
+    },
+    dark: {
+      background: '#121212',
+      text: '#FFFFFF',
+    },
+  },
+  spacing: {},
+  font: {
+    family: {
+      muktaBold: 'Mukta-Bold',
+      muktaRegular: 'Mukta-Regular',
+      NunitoBold: 'Nunito-Bold',
+      NunitoRegular: 'Nunito-Regular',
+    },
+    size: {
+      xxs: 9,
+      xs: 10,
+      s: 13,
+      m: 16,
+      l: 18,
+    },
+  },
+  lineHeight: {},
+  letterSpacing: {},
+  shadow: {},
+};
+
+// Pass the {Theme} object to the themeProvider function and then export theme to app
+export const theme = themeProvider(Theme);
+```
+2) Import app `theme` from the `theme.config.ts` file and enjoy `Dynamic & Auto-completion` features for all theme values
+   
 ```js
 // Styles
 import { StyleSheet, T, appearanceHook } from 'theme-csx';
+import {theme} from './theme.config';
 
 // Components
 import { Text, View } from 'react-native';
@@ -112,21 +169,21 @@ const DemoComponent = () => {
 const styles = StyleSheet.create({
   THEMED_CONTAINER: {
     flex: 1,
-    backgroundColor: 'white',
-    backgroundDark: 'gray', // backgroundDark prop was added to make it themeable
+    backgroundColor: theme.colors.light.background,
+    backgroundDark:  theme.colors.dark.background, // backgroundDark prop was added to make it themeable
     alignItems: 'center',
     justifyContent: 'center',
   },
   NORMAL_TEXT: {
     fontWeight: 'bold',
-    fontSize: 14,
-    color: 'green',
+    fontSize: theme.font.size.s,
+    color: theme.colors.green,
   },
   THEMED_TEXT: {
     fontWeight: 'bold',
-    fontSize: 14,
-    color: 'black',
-    colorDark: 'white', // colorDark prop was added to make it themeable
+    fontSize: theme.font.size.s,
+    color: theme.colors.light.text,
+    colorDark: theme.colors.dark.text, // colorDark prop was added to make it themeable
   },
 });
 ```
@@ -148,6 +205,10 @@ const styles = StyleSheet.create({
 > appearanceHook.switch():
 
 - Has the following options: `system`, `light`, `dark`
+
+> themeObj:
+
+- Has the following categories: `colors`, `spacing`, `font`, `lineHeight`, `letterSpacing`, `shadow`
 
 ## Sponsors
 
